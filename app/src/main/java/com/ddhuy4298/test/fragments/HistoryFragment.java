@@ -22,7 +22,7 @@ public class HistoryFragment extends BaseFragment<FragmentHistoryBinding>{
     private PostedJobAdapter adapter;
     private ArrayList<PostedJob> data = new ArrayList<>();
     private DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users")
-            .child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            .child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("requests");
 
     @Override
     protected int getLayoutId() {
