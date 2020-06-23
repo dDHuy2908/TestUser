@@ -8,11 +8,6 @@ public class Receiver {
     @SerializedName("notification")
     private Notification notification;
 
-//    public Receiver(String to, Notification notification) {
-//        this.to = to;
-//        this.notification = notification;
-//    }
-
     public Receiver() {
     }
 

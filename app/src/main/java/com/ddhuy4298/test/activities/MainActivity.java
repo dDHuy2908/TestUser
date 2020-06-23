@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.inputmethod.InputMethodManager;
@@ -14,11 +16,13 @@ import android.view.inputmethod.InputMethodManager;
 import com.ddhuy4298.test.fragments.AccountFragment;
 import com.ddhuy4298.test.fragments.BaseFragment;
 import com.ddhuy4298.test.fragments.HistoryFragment;
-import com.ddhuy4298.test.fragments.NotificationFragment;
 import com.ddhuy4298.test.fragments.ServicesFragment;
 import com.ddhuy4298.test.R;
 import com.ddhuy4298.test.databinding.ActivityMainBinding;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -27,14 +31,24 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private ServicesFragment fmServices = new ServicesFragment();
     private AccountFragment fmAccount = new AccountFragment();
     private HistoryFragment fmHistory = new HistoryFragment();
-    private NotificationFragment fmNotification = new NotificationFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        manager.cancel(1512);
+
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.bottomNav.setOnNavigationItemSelectedListener(MainActivity.this);
+
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
+            @Override
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                String token = instanceIdResult.getToken();
+                Log.e(getClass().getName(), token);
+            }
+        });
 
         initFragment();
     }
@@ -58,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         transaction.add(R.id.container, fmServices);
         transaction.add(R.id.container, fmAccount);
         transaction.add(R.id.container, fmHistory);
-        transaction.add(R.id.container, fmNotification);
         transaction.commit();
         showFragment(fmServices);
         binding.bottomNav.getMenu().getItem(0).setEnabled(false);
@@ -70,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         transaction.hide(fmServices);
         transaction.hide(fmAccount);
         transaction.hide(fmHistory);
-        transaction.hide(fmNotification);
         transaction.show(fmShow);
         transaction.commit();
     }
@@ -84,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 binding.bottomNav.getMenu().getItem(0).setEnabled(false);
                 binding.bottomNav.getMenu().getItem(1).setEnabled(true);
                 binding.bottomNav.getMenu().getItem(2).setEnabled(true);
-                binding.bottomNav.getMenu().getItem(3).setEnabled(true);
                 break;
             case R.id.bottom_nav_history:
                 showFragment(fmHistory);
@@ -92,23 +103,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 binding.bottomNav.getMenu().getItem(0).setEnabled(true);
                 binding.bottomNav.getMenu().getItem(1).setEnabled(false);
                 binding.bottomNav.getMenu().getItem(2).setEnabled(true);
-                binding.bottomNav.getMenu().getItem(3).setEnabled(true);
                 break;
-            case R.id.bottom_nav_notification:
-                showFragment(fmNotification);
+            case R.id.bottom_nav_account:
+                showFragment(fmAccount);
                 binding.bottomNav.getMenu().getItem(2).setChecked(true);
                 binding.bottomNav.getMenu().getItem(0).setEnabled(true);
                 binding.bottomNav.getMenu().getItem(1).setEnabled(true);
                 binding.bottomNav.getMenu().getItem(2).setEnabled(false);
-                binding.bottomNav.getMenu().getItem(3).setEnabled(true);
-                break;
-            case R.id.bottom_nav_account:
-                showFragment(fmAccount);
-                binding.bottomNav.getMenu().getItem(3).setChecked(true);
-                binding.bottomNav.getMenu().getItem(0).setEnabled(true);
-                binding.bottomNav.getMenu().getItem(1).setEnabled(true);
-                binding.bottomNav.getMenu().getItem(2).setEnabled(true);
-                binding.bottomNav.getMenu().getItem(3).setEnabled(false);
                 break;
         }
         return true;

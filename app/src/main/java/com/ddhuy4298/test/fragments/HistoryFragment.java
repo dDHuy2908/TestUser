@@ -7,10 +7,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.ddhuy4298.test.activities.JobDetailActivity;
-import com.ddhuy4298.test.PostedJobAdapter;
+import com.ddhuy4298.test.RequestAdapter;
 import com.ddhuy4298.test.R;
 import com.ddhuy4298.test.databinding.FragmentHistoryBinding;
-import com.ddhuy4298.test.listeners.PostedJobClickListener;
+import com.ddhuy4298.test.listeners.RequestClickListener;
 import com.ddhuy4298.test.models.Request;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -21,9 +21,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class HistoryFragment extends BaseFragment<FragmentHistoryBinding> implements PostedJobClickListener {
-    private PostedJobAdapter adapter;
-    private ArrayList<Request> data = new ArrayList<>();
+public class HistoryFragment extends BaseFragment<FragmentHistoryBinding> implements RequestClickListener {
+    private RequestAdapter adapter;
     private DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users")
             .child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("requests");
 
@@ -35,16 +34,18 @@ public class HistoryFragment extends BaseFragment<FragmentHistoryBinding> implem
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        adapter = new PostedJobAdapter(getLayoutInflater());
-        binding.rvPostedJob.setAdapter(adapter);
+        adapter = new RequestAdapter(getLayoutInflater());
+        binding.rvPostedRequest.setAdapter(adapter);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ArrayList<Request> data = new ArrayList<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Request job = snapshot.getValue(Request.class);
-                    data.add(job);
+                    Request request = snapshot.getValue(Request.class);
+                    data.add(request);
                 }
                 adapter.setData(data);
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -56,7 +57,7 @@ public class HistoryFragment extends BaseFragment<FragmentHistoryBinding> implem
     }
 
     @Override
-    public void onPostedJobClick(Request postedJob) {
+    public void onRequestClick(Request postedJob) {
         Intent intent = new Intent(getActivity(), JobDetailActivity.class);
     }
 }

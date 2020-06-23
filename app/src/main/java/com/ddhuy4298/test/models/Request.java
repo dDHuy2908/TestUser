@@ -7,6 +7,24 @@ public class Request {
     private String time;
     private String userId;
     private String job;
+    private String requestId;
+    private String status;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
+    }
 
     public String getJob() {
         return job;

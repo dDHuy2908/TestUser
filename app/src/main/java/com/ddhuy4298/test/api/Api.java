@@ -1,6 +1,5 @@
 package com.ddhuy4298.test.api;
 
-import com.ddhuy4298.test.models.NotificationResponse;
 import com.ddhuy4298.test.models.Receiver;
 
 import okhttp3.ResponseBody;
