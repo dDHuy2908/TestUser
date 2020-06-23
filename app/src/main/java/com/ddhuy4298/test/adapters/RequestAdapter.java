@@ -1,4 +1,4 @@
-package com.ddhuy4298.test;
+package com.ddhuy4298.test.adapters;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;

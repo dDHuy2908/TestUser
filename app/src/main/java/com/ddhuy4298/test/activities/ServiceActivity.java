@@ -3,6 +3,7 @@ package com.ddhuy4298.test.activities;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -17,11 +18,12 @@ import androidx.databinding.DataBindingUtil;
 
 import com.ddhuy4298.test.R;
 import com.ddhuy4298.test.api.ApiBuilder;
-import com.ddhuy4298.test.databinding.ActivityHouseCleanBinding;
+import com.ddhuy4298.test.databinding.ActivityServiceBinding;
 import com.ddhuy4298.test.listeners.HouseCleanItemListener;
 import com.ddhuy4298.test.models.Notification;
 import com.ddhuy4298.test.models.Receiver;
 import com.ddhuy4298.test.models.Request;
+import com.ddhuy4298.test.models.Service;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -35,9 +37,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HouseCleanActivity extends AppCompatActivity implements HouseCleanItemListener {
+import static com.ddhuy4298.test.fragments.ServicesFragment.SERVICE_ID;
 
-    private ActivityHouseCleanBinding binding;
+public class ServiceActivity extends AppCompatActivity implements HouseCleanItemListener {
+
+    private ActivityServiceBinding binding;
     private DatePickerDialog datePickerDialog;
     private TimePickerDialog timePickerDialog;
     private Calendar calendar = Calendar.getInstance();
@@ -46,7 +50,7 @@ public class HouseCleanActivity extends AppCompatActivity implements HouseCleanI
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_house_clean);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_service);
 
         binding.setListener(this);
 
@@ -119,23 +123,29 @@ public class HouseCleanActivity extends AppCompatActivity implements HouseCleanI
         String address = binding.edtAddress.getText().toString();
         String date = binding.tvDate.getText().toString();
         String time = binding.tvTime.getText().toString();
+
+        Intent intent = getIntent();
+        Service service = (Service) intent.getSerializableExtra(SERVICE_ID);
+
         Request request = new Request();
         request.setAddress(address);
         request.setDate(date);
         request.setTime(time);
         request.setUserId(firebaseAuth.getCurrentUser().getUid());
-        request.setJob("HouseCleaning");
+        request.setJob(service.getService());
         request.setRequestId(requestId);
         request.setStatus("Pending");
+
         reference.child("requests").child(requestId).setValue(request);
         requestReference.child(requestId).setValue(request);
-        Snackbar.make(binding.houseCleanLayout, "Đặt thành công!", Snackbar.LENGTH_SHORT).show();
+
+        Snackbar.make(binding.serviceLayout, "Đặt thành công!", Snackbar.LENGTH_SHORT).show();
 
         Notification notification = new Notification();
         notification.setTitle("New request available!");
         notification.setBody("A new request is suitable for you. Check it!.");
         Receiver receiver = new Receiver();
-        receiver.setTo("/topics/HouseCleaning");
+        receiver.setTo("/topics/" + service.getService());
         receiver.setNotification(notification);
 
         ApiBuilder.getInstance()
@@ -146,9 +156,9 @@ public class HouseCleanActivity extends AppCompatActivity implements HouseCleanI
                         int n = 0;
                         Log.e(getClass().getName(), n +"");
                         if (response.code() == 200) {
-                            Snackbar.make(binding.houseCleanLayout, "Success", Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(binding.serviceLayout, "Success", Snackbar.LENGTH_SHORT).show();
                         } else {
-                            Snackbar.make(binding.houseCleanLayout, "Fail", Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(binding.serviceLayout, "Fail", Snackbar.LENGTH_SHORT).show();
                         }
                     }
 

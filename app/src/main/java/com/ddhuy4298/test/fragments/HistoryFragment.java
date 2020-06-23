@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.ddhuy4298.test.activities.JobDetailActivity;
-import com.ddhuy4298.test.RequestAdapter;
+import com.ddhuy4298.test.adapters.RequestAdapter;
 import com.ddhuy4298.test.R;
 import com.ddhuy4298.test.databinding.FragmentHistoryBinding;
 import com.ddhuy4298.test.listeners.RequestClickListener;

@@ -25,7 +25,7 @@
         <activity
             android:name=".activities.RegisterActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activities.HouseCleanActivity" />
+        <activity android:name=".activities.ServiceActivity" />
         <service android:name=".services.FCMService"
             android:exported="false">
             <intent-filter>

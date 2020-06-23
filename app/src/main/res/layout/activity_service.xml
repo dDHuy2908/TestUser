@@ -5,7 +5,7 @@
 
         <variable
             name="listener"
-            type="com.ddhuy4298.test.activities.HouseCleanActivity" />
+            type="com.ddhuy4298.test.activities.ServiceActivity" />
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="16dp"
-        android:id="@+id/house_clean_layout">
+        android:id="@+id/service_layout">
 
         <EditText
             android:id="@+id/edt_address"
